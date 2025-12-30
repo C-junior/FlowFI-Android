@@ -6,7 +6,8 @@ import {
     type User,
     updateProfile,
     GoogleAuthProvider,
-    signInWithPopup
+    signInWithRedirect,
+    getRedirectResult
 } from 'firebase/auth';
 import { auth } from '@/firebase';
 
@@ -42,15 +43,24 @@ export const authService = {
         };
     },
 
-    // Sign in with Google
-    async loginWithGoogle(): Promise<AuthUser> {
+    // Sign in with Google (using redirect for Capacitor/Android compatibility)
+    async loginWithGoogle(): Promise<void> {
         const provider = new GoogleAuthProvider();
-        const userCredential = await signInWithPopup(auth, provider);
-        return {
-            uid: userCredential.user.uid,
-            email: userCredential.user.email,
-            displayName: userCredential.user.displayName
-        };
+        // Use redirect instead of popup for native app compatibility
+        await signInWithRedirect(auth, provider);
+    },
+
+    // Handle redirect result after Google sign-in
+    async handleGoogleRedirect(): Promise<AuthUser | null> {
+        const result = await getRedirectResult(auth);
+        if (result) {
+            return {
+                uid: result.user.uid,
+                email: result.user.email,
+                displayName: result.user.displayName
+            };
+        }
+        return null;
     },
 
     // Sign out

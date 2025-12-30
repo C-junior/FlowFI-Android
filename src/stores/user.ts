@@ -65,16 +65,29 @@ export const useUserStore = defineStore('user', () => {
     async function loginWithGoogle() {
         isLoading.value = true
         try {
-            const user = await authService.loginWithGoogle()
-            currentUser.value = user
-
-            // Load user profile from Firestore
-            await loadUserProfile()
-
-            return user
-        } finally {
+            // This will redirect to Google sign-in page
+            await authService.loginWithGoogle()
+            // Note: The page will redirect, so we won't reach here
+            // The redirect result is handled in initAuth/handleGoogleRedirect
+        } catch (error) {
             isLoading.value = false
+            throw error
         }
+    }
+
+    // Handle redirect result after Google sign-in
+    async function handleGoogleRedirect() {
+        try {
+            const user = await authService.handleGoogleRedirect()
+            if (user) {
+                currentUser.value = user
+                await loadUserProfile()
+                return user
+            }
+        } catch (error) {
+            console.error('Google redirect error:', error)
+        }
+        return null
     }
 
     async function logout() {
@@ -149,6 +162,7 @@ export const useUserStore = defineStore('user', () => {
         register,
         login,
         loginWithGoogle,
+        handleGoogleRedirect,
         logout,
         updateProfile,
         saveUserProfile,
