@@ -6,9 +6,10 @@ import {
     type User,
     updateProfile,
     GoogleAuthProvider,
-    signInWithRedirect,
-    getRedirectResult
+    signInWithCredential
 } from 'firebase/auth';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import { Capacitor } from '@capacitor/core';
 import { auth } from '@/firebase';
 
 export interface AuthUser {
@@ -43,28 +44,40 @@ export const authService = {
         };
     },
 
-    // Sign in with Google (using redirect for Capacitor/Android compatibility)
-    async loginWithGoogle(): Promise<void> {
-        const provider = new GoogleAuthProvider();
-        // Use redirect instead of popup for native app compatibility
-        await signInWithRedirect(auth, provider);
-    },
+    // Sign in with Google (native on Android, fallback on web)
+    async loginWithGoogle(): Promise<AuthUser> {
+        if (Capacitor.isNativePlatform()) {
+            // Use native Google Sign-In on Android/iOS
+            const result = await FirebaseAuthentication.signInWithGoogle();
 
-    // Handle redirect result after Google sign-in
-    async handleGoogleRedirect(): Promise<AuthUser | null> {
-        const result = await getRedirectResult(auth);
-        if (result) {
+            // Get the ID token to sign in with Firebase
+            const credential = GoogleAuthProvider.credential(result.credential?.idToken);
+            const userCredential = await signInWithCredential(auth, credential);
+
             return {
-                uid: result.user.uid,
-                email: result.user.email,
-                displayName: result.user.displayName
+                uid: userCredential.user.uid,
+                email: userCredential.user.email,
+                displayName: userCredential.user.displayName
+            };
+        } else {
+            // Web fallback - use popup (for development)
+            const { signInWithPopup } = await import('firebase/auth');
+            const provider = new GoogleAuthProvider();
+            const userCredential = await signInWithPopup(auth, provider);
+            return {
+                uid: userCredential.user.uid,
+                email: userCredential.user.email,
+                displayName: userCredential.user.displayName
             };
         }
-        return null;
     },
 
     // Sign out
     async logout(): Promise<void> {
+        // Sign out from native as well if on native platform
+        if (Capacitor.isNativePlatform()) {
+            await FirebaseAuthentication.signOut();
+        }
         await signOut(auth);
     },
 
