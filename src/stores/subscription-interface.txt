@@ -1,0 +1,14 @@
+export interface Subscription {
+  id: string
+  amount: number
+  category: string
+  description: string
+  type: 'expense' | 'income'
+  paymentMethod: 'credit-card' | 'debit-card' | 'pix' | 'cash' | 'other'
+  creditCardId?: string
+  startDate: string
+  nextDueDate: string
+  dayOfMonth: number
+  isActive: boolean
+  createdAt: string
+}
