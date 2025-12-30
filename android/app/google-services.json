@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1005835173444",
+    "firebase_url": "https://flowfi-d88ff-default-rtdb.firebaseio.com",
+    "project_id": "flowfi-d88ff",
+    "storage_bucket": "flowfi-d88ff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005835173444:android:56639f6ac75c09a94bc611",
+        "android_client_info": {
+          "package_name": "com.flowfi.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1005835173444-pnvhe6k9cp2b0jsgir5khl8glq84uvch.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.flowfi.app",
+            "certificate_hash": "0c820043f272927219d8b4d629628aeac30d3e20"
+          }
+        },
+        {
+          "client_id": "1005835173444-1ldutovft46udtgbknnoabuo6i0sc29b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQjXfIIrGjy2dMHfJS-2luG5pffvFdaw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1005835173444-1ldutovft46udtgbknnoabuo6i0sc29b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
